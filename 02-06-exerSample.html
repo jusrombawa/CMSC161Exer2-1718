@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>
+      First WebGL Program
+  </title>
+
+  <!--Import external javascript file-->
+  <!--Helper javascript methods for initializing webgl-->
+  <script src="./lib/webgl-init.js"></script>
+  <script src="./lib/webgl-utils.js"></script>
+  <script src="./lib/webgl-debug.js"></script>
+
+  <!--Vertex Shader-->
+  <script type="x-shader/x-vertex" id="vshader">
+    //declare an attribute variable that can be accessed in our javascript program
+    attribute vec4 aPosition;
+    void main() {
+
+      //Built-in variable in GLSL ES that dictates the position of the vertex
+      gl_Position = aPosition;
+
+      //Built-in variable in GLSL ES that dictates the size of the vertex
+      gl_PointSize = 10.0;
+    }
+  </script>
+
+  <!--Fragment Shader-->
+  <script type="x-shader/x-fragment" id="fshader">
+    //specifies the precision qualifer for the variable float
+    precision mediump float;
+
+    //declare and uniform variable that can be accessed in our javascript program
+    uniform vec4 uFragColor;
+    void main() {
+
+
+      //Sets the color for every fragment created by primitive assembly
+      gl_FragColor = uFragColor;
+    }
+  </script>
+
+
+  <script>
+  function main() {
+    //Retrieve <canvas> element
+    var canvas = document.getElementById("main_canvas");
+    if(!canvas) {
+        console.log("Failed to retrieve the <canvas> element");
+    }
+
+    //Get the rendering context (WebGL)
+    var gl = initializeWebGL(canvas,true);
+
+    //initialize shaders program
+    var vertexShader = initializeShader(gl,"vshader");
+    var fragmentShader = initializeShader(gl, "fshader");
+    var program = initializeProgram(gl,vertexShader,fragmentShader);
+    gl.useProgram(program);
+
+
+
+
+    //clear canvas
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    //Get the storage location of shader variables
+    var aPositionPointer = gl.getAttribLocation(program,"aPosition");
+    var uFragColorPointer = gl.getUniformLocation(program,"uFragColor");
+    //array that contains the vertex data
+    
+
+    // Render upper left quadrant
+    var vertices = [
+      -1.0, 1.0, 0.0, 1.0,
+      -1.0, 0.5, 0.0, 1.0,
+      1.0, 0.5, 0.0, 1.0,
+      1.0, 1, 0.0, 1.0,
+
+      -1.0, 0.5, 0.0, 1.0,
+      -1.0, 0.0, 0.0, 1.0,
+       1.0, 0.0, 0.0, 1.0,
+       1.0, 0.5, 0.0, 1.0,
+
+      -1.0, 0.0, 0.0, 1.0,
+      -1.0, -0.5, 0.0, 1.0,
+       1.0, -0.5, 0.0, 1.0,
+       1.0, 0.0, 0.0, 1.0,
+
+       -1.0, -0.5, 0.0, 1.0,
+      -1.0, -1.0, 0.0, 1.0,
+       1.0, -1.0, 0.0, 1.0,
+       1.0, -0.5, 0.0, 1.0,
+    ];
+
+    var topLeftBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,topLeftBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    gl.viewport(0, canvas.height/2, canvas.width/2, canvas.height/2);
+    
+    gl.uniform4f(uFragColorPointer,1.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,1.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+
+    gl.uniform4f(uFragColorPointer,1.0,1.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 8, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,1.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 12, 4);
+
+
+    // Render upper right quadrant
+    var vertices = [
+      -1.0, 1.0, 0.0, 1.0,
+      -1.0, 0.0, 0.0, 4.0,
+       1.0, 0.0, 0.0, 1.0,
+       1.0, 1.0, 0.0, 1.0,
+
+      -1.0, 0.0, 0.0, 4.0,
+      -1.0, -1.0, 0.0, 1.0,
+       1.0, -1.0, 0.0, 1.0,
+       1.0, 0.0, 0.0, 1.0,
+    ];
+
+    var topRightBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,topRightBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    gl.viewport(canvas.width/2, canvas.height/2, canvas.width/2, canvas.height/2);
+    
+    //blue
+    gl.uniform4f(uFragColorPointer,0.0,0.0,1.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    //blue
+    gl.uniform4f(uFragColorPointer,1.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+
+     // Render lower left quadrant
+    gl.viewport(0, 0, canvas.width/2, canvas.height/2);
+    
+    /*Own code starts here*/
+    //points for green background
+    var green = [
+      -1.0, 1.0 , 0.0, 1.0,
+      -1.0, -1.0, 0.0, 1.0,  
+      1.0, -1.0, 0.0, 1.0,
+      1.0, 1.0, 0.0, 1.0
+    ];
+    //create buffer
+    var greenBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,greenBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(green),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.0,0.486,0.349,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    //points for yellow triangle behind black
+    var yellow = [
+      -1.0, -0.76, 0.0, 1.0,
+      -0.241, 0.0, 0.0, 1.0,  
+      -1.0, 0.76, 0.0, 1.0,
+    ];
+
+    //create buffer
+
+    var yellowBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,yellowBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(yellow),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.988,0.710,0.078,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    //points for main black triangle
+    var black = [
+    -1.0, -0.6, 0.0, 1.0,
+    -0.4, 0.0, 0.0, 1.0,  
+    -1.0, 0.6, 0.0, 1.0,
+    ];
+    var blackBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,blackBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(black),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    
+    //points for upper white trapezoid
+    var whiteUp = [
+    0.04, 0.2, 0.0, 1.0,
+    -0.76, 1.0, 0.0, 1.0,
+    1.0, 1.0, 0.0, 1.0,
+    1.0, 0.2, 0.0, 1.0
+    ];
+    //create buffer
+    var whiteUpBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,whiteUpBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(whiteUp),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,1.0,1.0,1.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    //points for lower white trapezoid are from upper white but with reversed Y coords
+    var whiteDown = [
+    0.04, -0.2, 0.0, 1.0,
+    -0.76, -1.0, 0.0, 1.0,
+    1.0, -1.0, 0.0, 1.0,
+    1.0, -0.2, 0.0, 1.0
+    ];
+    //create buffer
+    var whiteDownBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,whiteDownBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(whiteDown),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,1.0,1.0,1.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    //points for red trapezoid
+    var red = [
+    0.067, 0.333, 0.0, 1.0,
+    -0.6, 1.0, 0.0, 1.0,
+    1.0, 1.0, 0.0, 1.0,
+    1.0, 0.333, 0.0, 1.0
+    ];
+    var redBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,redBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(red),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.886,0.239,0.157,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    //points for blue trapezoid are same as red but with reversed Y coords
+    var blue = [
+    0.067, -0.333, 0.0, 1.0,
+    -0.6, -1.0, 0.0, 1.0,
+    1.0, -1.0, 0.0, 1.0,
+    1.0, -0.333, 0.0, 1.0
+    ];
+    var blueBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,blueBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(blue),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.047,0.110,0.550,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    // Render lower right quadrant
+
+    var vertices = [
+      0.0, 0.0, 0.0, 1.0
+    ];
+    var bottomRightBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,bottomRightBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    gl.uniform4f(uFragColorPointer,1.0,0.0,0.0,1.0);
+
+    gl.viewport(canvas.width/2, 0, canvas.width/2, canvas.height/2);
+    gl.drawArrays(gl.POINTS, 0, 1);
+    gl.drawArrays(gl.POINTS, 0, 1);
+
+    
+
+
+  }
+  </script>
+</head>
+
+<body onload="main()" style="text-align: center">
+	<canvas id="main_canvas" width="1700" height="900" style="border: 1px black solid">
+	</canvas>
+  <h1>
+    Flag of Indonesia
+  </h1>
+</body>
+</html>
