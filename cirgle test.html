@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>
+      Cirgle test
+  </title>
+
+  <!-- Rombawa, Justin Aaron S. -->
+  <!-- Sta. Ana, Yves Robert D. -->
+  <!--Import external javascript file-->
+  <!--Helper javascript methods for initializing webgl-->
+  <script src="./lib/webgl-init.js"></script>
+  <script src="./lib/webgl-utils.js"></script>
+  <script src="./lib/webgl-debug.js"></script>
+
+  <!--Vertex Shader-->
+  <script type="x-shader/x-vertex" id="vshader">
+    //declare an attribute variable that can be accessed in our javascript program
+    attribute vec4 aPosition;
+    void main() {
+
+      //Built-in variable in GLSL ES that dictates the position of the vertex
+      gl_Position = aPosition;
+
+      //Built-in variable in GLSL ES that dictates the size of the vertex
+      gl_PointSize = 10.0;
+    }
+  </script>
+
+  <!--Fragment Shader-->
+  <script type="x-shader/x-fragment" id="fshader">
+    //specifies the precision qualifer for the variable float
+    precision mediump float;
+
+    //declare and uniform variable that can be accessed in our javascript program
+    uniform vec4 uFragColor;
+    void main() {
+
+
+      //Sets the color for every fragment created by primitive assembly
+      gl_FragColor = uFragColor;
+    }
+  </script>
+
+
+  <script>
+  function main() {
+    //Retrieve <canvas> element
+    var canvas = document.getElementById("main_canvas");
+    if(!canvas) {
+        console.log("Failed to retrieve the <canvas> element");
+    }
+
+    //Get the rendering context (WebGL)
+    var gl = initializeWebGL(canvas,true);
+
+    //initialize shaders program
+    var vertexShader = initializeShader(gl,"vshader");
+    var fragmentShader = initializeShader(gl, "fshader");
+    var program = initializeProgram(gl,vertexShader,fragmentShader);
+    gl.useProgram(program);
+
+    //clear canvas
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    //Get the storage location of shader variables
+    var aPositionPointer = gl.getAttribLocation(program,"aPosition");
+    var uFragColorPointer = gl.getUniformLocation(program,"uFragColor");
+    //array that contains the vertex data
+
+    /*Own code starts here*/
+
+      
+    //points for main black triangle
+    var black = [];
+    for(var i=0; i<=360; i++)
+    {
+        //convert degree to radian
+        var j = i * Math.PI/180
+
+        //cos and sin only work with radian
+        var vert1 = [
+            Math.cos(j), //x
+            Math.sin(j), //y
+            0.0,         //z
+            1.0          //w
+        ];
+        var vert2 = [0.0,0.0,0.0,1.0]; //center
+
+        //plug in to original array
+        black = black.concat(vert1);
+        black = black.concat(vert2);
+    }
+    var n = black.length / 4;
+
+    var blackBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,blackBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(black),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+    
+    
+  }
+  </script>
+</head>
+
+<body onload="main()" style="text-align: center">
+    
+	<canvas id="main_canvas" width="1000" height="1000" style="border: 1px black solid">
+	</canvas>
+  </body>
+</html>
