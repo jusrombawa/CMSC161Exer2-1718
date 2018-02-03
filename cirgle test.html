@@ -71,9 +71,47 @@
 
     /*Own code starts here*/
 
-      
-    //points for main black triangle
-    var black = [];
+    var bughaw = [
+    -0.133, 0.0, 0.0, 1.0,
+    -1.0 , 1.0, 0.0, 1.0,
+    1.0, 1.0, 0.0, 1.0,
+    1.0, 0.0, 0.0, 1.0
+    ];
+    //create buffer
+    var bughawBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,bughawBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(bughaw),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.0,56.0/255.0,168.0/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+
+    //same points as bughaw, but with reversed Y
+    var pula = [
+    -0.133, 0.0, 0.0, 1.0,
+    -1.0 , -1.0, 0.0, 1.0,
+    1.0, -1.0, 0.0, 1.0,
+    1.0, 0.0, 0.0, 1.0
+    ];
+    //create buffer
+    var pulaBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,pulaBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(pula),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,206/255.0,17/255.0,38/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+
+    //points for araw
+    var araw = [];
     for(var i=0; i<=360; i++)
     {
         //convert degree to radian
@@ -81,38 +119,43 @@
 
         //cos and sin only work with radian
         var vert1 = [
-            Math.cos(j), //x
-            Math.sin(j), //y
+            //radius of sun is 50 pixels, 1/10 of xRes/2, 1/5 of yRes/2
+
+            //translate all x so it goes to left, in the middle of triangle
+            Math.cos(j)/10 - 0.692, //x
+            Math.sin(j)/5, //y
             0.0,         //z
             1.0          //w
         ];
-        var vert2 = [0.0,0.0,0.0,1.0]; //center
+        //yes including the center
+
+        //required center: 154x250
+        //subtract difference from origin (500x250), subtract xRes/2 (500), divide by xRes/2 (500) = -0.692
+        var vert2 = [-0.692,0.0,0.0,1.0]; //center
 
         //plug in to original array
-        black = black.concat(vert1);
-        black = black.concat(vert2);
+        araw = araw.concat(vert1);
+        araw = araw.concat(vert2);
     }
-    var n = black.length / 4;
+    var n = araw.length / 4;
 
-    var blackBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,blackBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(black),gl.STATIC_DRAW);
+    var arawBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,arawBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(araw),gl.STATIC_DRAW);
     gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
     gl.enableVertexAttribArray(aPositionPointer);
 
     //Set color in fragment shader
-    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.uniform4f(uFragColorPointer,0.988,0.819,0.086,1.0);
     //Execute vertex shader
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
-    
-    
   }
   </script>
 </head>
 
 <body onload="main()" style="text-align: center">
     
-	<canvas id="main_canvas" width="1000" height="1000" style="border: 1px black solid">
+	<canvas id="main_canvas" width="1000" height="500" style="border: 1px black solid">
 	</canvas>
   </body>
 </html>
