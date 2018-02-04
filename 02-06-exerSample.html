@@ -117,11 +117,11 @@
     // Render upper right quadrant
     var vertices = [
       -1.0, 1.0, 0.0, 1.0,
-      -1.0, 0.0, 0.0, 4.0,
+      -1.0, 0.0, 0.0, 5.0,
        1.0, 0.0, 0.0, 1.0,
        1.0, 1.0, 0.0, 1.0,
 
-      -1.0, 0.0, 0.0, 4.0,
+      -1.0, 0.0, 0.0, 5.0,
       -1.0, -1.0, 0.0, 1.0,
        1.0, -1.0, 0.0, 1.0,
        1.0, 0.0, 0.0, 1.0,
@@ -143,7 +143,48 @@
     gl.uniform4f(uFragColorPointer,1.0,0.0,0.0,1.0);
     gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
 
-     // Render lower left quadrant
+    //points for araw
+    var araw = [];
+    for(var i=0; i<=360; i++)
+    {
+        //convert degree to radian
+        var j = i * Math.PI/180
+
+        //cos and sin only work with radian
+        var vert1 = [
+            //radius of sun is 50 pixels, 1/10 of xRes/2, 1/5 of yRes/2
+
+            //translate all x so it goes to left, in the middle of triangle
+            Math.cos(j)/10 - 0.692, //x
+            Math.sin(j)/5, //y
+            0.0,         //z
+            1.0          //w
+        ];
+        //yes including the center
+
+        //required center: 154x250
+        //subtract difference from origin (500x250), subtract xRes/2 (500), divide by xRes/2 (500) = -0.692
+        var vert2 = [-0.692,0.0,0.0,1.0]; //center
+
+        //plug in to original array
+        araw = araw.concat(vert1);
+        araw = araw.concat(vert2);
+    }
+    var n = araw.length / 4;
+
+    var arawBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,arawBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(araw),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.988,0.819,0.086,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+
+    /* Render lower left quadrant*/
+
     gl.viewport(0, 0, canvas.width/2, canvas.height/2);
     
     /*Own code starts here*/
@@ -265,21 +306,42 @@
     //Execute vertex shader
     gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 
-    // Render lower right quadrant
+
+
+    /*Render lower right quadrant*/
+    gl.viewport(canvas.width/2, 0, canvas.width/2, canvas.height/2);
 
     var vertices = [
-      0.0, 0.0, 0.0, 1.0
+      -1.0, 1, 0.0, 1.0,
+      1, 1, 0.0, 1.0,
+      1.0, -1, 0.0, 1.0,
+      -1, -1, 0.0, 1.0,
+
+      -1.0, 1, 0.0, 1.0,
+      0.35, 1, 0.0, 1.0,
+      -1.0, -1, 0.0, 1.0,
+
+      1.0, 1.0, 0.0, 1.0,
+      1.0, -1.0, 0.0, 1.0,
+      -0.25, -1.0, 0.0, 1.0,
+      -0.25, 1.0, 0.0, 1.0,
+
     ];
     var bottomRightBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,bottomRightBuffer);
     gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);
     gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
     gl.enableVertexAttribArray(aPositionPointer);
-    gl.uniform4f(uFragColorPointer,1.0,0.0,0.0,1.0);
 
-    gl.viewport(canvas.width/2, 0, canvas.width/2, canvas.height/2);
-    gl.drawArrays(gl.POINTS, 0, 1);
-    gl.drawArrays(gl.POINTS, 0, 1);
+    gl.uniform4f(uFragColorPointer,1.0,1.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    
+
+    gl.uniform4f(uFragColorPointer,0.0,0.6,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLES, 4, 3);
+
+    gl.uniform4f(uFragColorPointer,1.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLES, 7, 3);
 
     
 
