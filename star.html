@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>
+      Star test
+  </title>
+
+  <!-- Rombawa, Justin Aaron S. -->
+  <!-- Sta. Ana, Yves Robert D. -->
+  <!--Import external javascript file-->
+  <!--Helper javascript methods for initializing webgl-->
+  <script src="./lib/webgl-init.js"></script>
+  <script src="./lib/webgl-utils.js"></script>
+  <script src="./lib/webgl-debug.js"></script>
+
+  <!--Vertex Shader-->
+  <script type="x-shader/x-vertex" id="vshader">
+    //declare an attribute variable that can be accessed in our javascript program
+    attribute vec4 aPosition;
+    void main() {
+
+      //Built-in variable in GLSL ES that dictates the position of the vertex
+      gl_Position = aPosition;
+
+      //Built-in variable in GLSL ES that dictates the size of the vertex
+      gl_PointSize = 10.0;
+    }
+  </script>
+
+  <!--Fragment Shader-->
+  <script type="x-shader/x-fragment" id="fshader">
+    //specifies the precision qualifer for the variable float
+    precision mediump float;
+
+    //declare and uniform variable that can be accessed in our javascript program
+    uniform vec4 uFragColor;
+    void main() {
+
+
+      //Sets the color for every fragment created by primitive assembly
+      gl_FragColor = uFragColor;
+    }
+  </script>
+
+
+  <script>
+  function main() {
+    //Retrieve <canvas> element
+    var canvas = document.getElementById("main_canvas");
+    if(!canvas) {
+        console.log("Failed to retrieve the <canvas> element");
+    }
+
+    //Get the rendering context (WebGL)
+    var gl = initializeWebGL(canvas,true);
+
+    //initialize shaders program
+    var vertexShader = initializeShader(gl,"vshader");
+    var fragmentShader = initializeShader(gl, "fshader");
+    var program = initializeProgram(gl,vertexShader,fragmentShader);
+    gl.useProgram(program);
+
+    //clear canvas
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    //Get the storage location of shader variables
+    var aPositionPointer = gl.getAttribLocation(program,"aPosition");
+    var uFragColorPointer = gl.getUniformLocation(program,"uFragColor");
+    //array that contains the vertex data
+
+    /*Own code starts here*/
+
+    var star = [
+    0.0000, -0.0089, 0.0, 1.0,
+    -0.8622, 0.2400, 0.0, 1.0,
+    -0.2044, 0.2400, 0.0, 1.0,
+    0.0000, 0.8711, 0.0, 1.0,
+    0.2044, 0.2400, 0.0, 1.0,
+    0.8711, 0.2400, 0.0, 1.0,
+    0.3333, -0.1511, 0.0, 1.0,
+    0.5378, -0.7822, 0.0, 1.0,
+    0.0000, -0.3911, 0.0, 1.0,
+    -0.5378, -0.7822, 0.0, 1.0,
+    -0.3333, -0.1511, 0.0, 1.0,
+    -0.8622, 0.2400, 0.0, 1.0,
+    ];
+    
+
+    var starBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,starBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(star),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,1.0,1.0,0.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 12);
+
+  }
+  </script>
+</head>
+
+<body onload="main()" style="text-align: center">
+    
+	<canvas id="main_canvas" width="450" height="450" style="border: 1px black solid">
+	</canvas>
+  </body>
+</html>
