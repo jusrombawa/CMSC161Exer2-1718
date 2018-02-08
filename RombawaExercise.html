@@ -1,0 +1,976 @@
+<!--
+	Rombawa, Justin Aaron S.
+	Sta. Ana, Yves Robert D.
+	CMSC 161 Exer 2 - Flags
+ -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>
+      Flags
+  </title>
+
+
+
+  <!--Import external javascript file-->
+  <!--Helper javascript methods for initializing webgl-->
+  <script src="./lib/webgl-init.js"></script>
+  <script src="./lib/webgl-utils.js"></script>
+  <script src="./lib/webgl-debug.js"></script>
+
+  <!--Vertex Shader-->
+  <script type="x-shader/x-vertex" id="vshader">
+    //declare an attribute variable that can be accessed in our javascript program
+    attribute vec4 aPosition;
+    void main() {
+
+      //Built-in variable in GLSL ES that dictates the position of the vertex
+      gl_Position = aPosition;
+
+      //Built-in variable in GLSL ES that dictates the size of the vertex
+      gl_PointSize = 10.0;
+    }
+  </script>
+
+  <!--Fragment Shader-->
+  <script type="x-shader/x-fragment" id="fshader">
+    //specifies the precision qualifer for the variable float
+    precision mediump float;
+
+    //declare and uniform variable that can be accessed in our javascript program
+    uniform vec4 uFragColor;
+    void main() {
+
+
+      //Sets the color for every fragment created by primitive assembly
+      gl_FragColor = uFragColor;
+    }
+  </script>
+
+
+  <script>
+  function main() {
+    //Retrieve <canvas> element
+    var canvas = document.getElementById("main_canvas");
+    if(!canvas) {
+        console.log("Failed to retrieve the <canvas> element");
+    }
+
+    //Get the rendering context (WebGL)
+    var gl = initializeWebGL(canvas,true);
+
+    //initialize shaders program
+    var vertexShader = initializeShader(gl,"vshader");
+    var fragmentShader = initializeShader(gl, "fshader");
+    var program = initializeProgram(gl,vertexShader,fragmentShader);
+    gl.useProgram(program);
+
+
+
+
+    //clear canvas
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    //Get the storage location of shader variables
+    var aPositionPointer = gl.getAttribLocation(program,"aPosition");
+    var uFragColorPointer = gl.getUniformLocation(program,"uFragColor");
+    //array that contains the vertex data
+    
+
+    // Render upper left quadrant
+    var vertices = [
+      -1.0, 1.0, 0.0, 1.0,
+      -1.0, 0.5, 0.0, 1.0,
+      1.0, 0.5, 0.0, 1.0,
+      1.0, 1, 0.0, 1.0,
+
+      -1.0, 0.5, 0.0, 1.0,
+      -1.0, 0.0, 0.0, 1.0,
+       1.0, 0.0, 0.0, 1.0,
+       1.0, 0.5, 0.0, 1.0,
+
+      -1.0, 0.0, 0.0, 1.0,
+      -1.0, -0.5, 0.0, 1.0,
+       1.0, -0.5, 0.0, 1.0,
+       1.0, 0.0, 0.0, 1.0,
+
+       -1.0, -0.5, 0.0, 1.0,
+      -1.0, -1.0, 0.0, 1.0,
+       1.0, -1.0, 0.0, 1.0,
+       1.0, -0.5, 0.0, 1.0,
+    ];
+
+    var topLeftBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,topLeftBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    gl.viewport(0, canvas.height/2, canvas.width/2, canvas.height/2);
+    
+    gl.uniform4f(uFragColorPointer,1.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,1.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+
+    gl.uniform4f(uFragColorPointer,1.0,1.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 8, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,1.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 12, 4);
+
+
+    // Render upper right quadrant
+
+
+    gl.viewport(canvas.width/2, canvas.height/2, canvas.width/2, canvas.height/2);
+
+    var tala1 = [
+    0.0000/2-0.3222, -0.00089, 0.0, 1.0,
+    -0.08622/2-0.3222, 0.02400, 0.0, 1.0,
+    -0.02044/2-0.3222, 0.02400, 0.0, 1.0,
+    0.00000/2-0.3222, 0.08711, 0.0, 1.0,
+    0.02044/2-0.3222, 0.02400, 0.0, 1.0,
+    0.08711/2-0.3222, 0.02400, 0.0, 1.0,
+    0.03333/2-0.3222, -0.01511, 0.0, 1.0,
+    0.05378/2-0.3222, -0.07822, 0.0, 1.0,
+    0.00000/2-0.3222, -0.03911, 0.0, 1.0,
+    -0.05378/2-0.3222, -0.07822, 0.0, 1.0,
+    -0.03333/2-0.3222, -0.01511, 0.0, 1.0,
+    -0.08622/2-0.3222, 0.02400, 0.0, 1.0,
+    ];
+
+    var tala1Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,tala1Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(tala1),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 12);
+
+    var tala2 = [
+    0.0000/2-0.9222, -0.00089+0.7333, 0.0, 1.0,
+    -0.08622/2-0.9222, 0.02400+0.7333, 0.0, 1.0,
+    -0.02044/2-0.9222, 0.02400+0.7333, 0.0, 1.0,
+    0.00000/2-0.9222, 0.08711+0.7333, 0.0, 1.0,
+    0.02044/2-0.9222, 0.02400+0.7333, 0.0, 1.0,
+    0.08711/2-0.9222, 0.02400+0.7333, 0.0, 1.0,
+    0.03333/2-0.9222, -0.01511+0.7333, 0.0, 1.0,
+    0.05378/2-0.9222, -0.07822+0.7333, 0.0, 1.0,
+    0.00000/2-0.9222, -0.03911+0.7333, 0.0, 1.0,
+    -0.05378/2-0.9222, -0.07822+0.7333, 0.0, 1.0,
+    -0.03333/2-0.9222, -0.01511+0.7333, 0.0, 1.0,
+    -0.08622/2-0.9222, 0.02400+0.7333, 0.0, 1.0,
+    ];
+
+    var tala2Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,tala2Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(tala2),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 12);
+
+    var tala3 = [
+    0.0000/2-0.9222, -0.00089-0.7333, 0.0, 1.0,
+    -0.08622/2-0.9222, 0.02400-0.7333, 0.0, 1.0,
+    -0.02044/2-0.9222, 0.02400-0.7333, 0.0, 1.0,
+    0.00000/2-0.9222, 0.08711-0.7333, 0.0, 1.0,
+    0.02044/2-0.9222, 0.02400-0.7333, 0.0, 1.0,
+    0.08711/2-0.9222, 0.02400-0.7333, 0.0, 1.0,
+    0.03333/2-0.9222, -0.01511-0.7333, 0.0, 1.0,
+    0.05378/2-0.9222, -0.07822-0.7333, 0.0, 1.0,
+    0.00000/2-0.9222, -0.03911-0.7333, 0.0, 1.0,
+    -0.05378/2-0.9222, -0.07822-0.7333, 0.0, 1.0,
+    -0.03333/2-0.9222, -0.01511-0.7333, 0.0, 1.0,
+    -0.08622/2-0.9222, 0.02400-0.7333, 0.0, 1.0,
+    ];
+
+    var tala3Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,tala3Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(tala3),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 12);
+
+
+    var sinag1 = [
+    -0.6711, 0.1800, 0.0, 1.0,
+    -0.6533, 0.3600, 0.0, 1.0,
+    -0.6667, 0.3822, 0.0, 1.0,
+    -0.6778, 0.2000, 0.0, 1.0,
+
+    -0.6889, 0.4222, 0.0, 1.0,
+    -0.6756, 0.4000, 0.0, 1.0,
+    -0.6822, 0.1800, 0.0, 1.0,
+    -0.6978, 0.2000, 0.0, 1.0,
+    -0.7022, 0.3833, 0.0, 1.0,
+
+    -0.7022, 0.2000, 0.0, 1.0,
+    -0.7133, 0.3822, 0.0, 1.0,
+    -0.7233, 0.3400, 0.0, 1.0,
+    -0.7089, 0.1800, 0.0, 1.0
+    ];
+
+    var sinag1Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,sinag1Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(sinag1),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 5);
+    gl.drawArrays(gl.TRIANGLE_FAN, 9, 4);
+
+    var sinag2 = sinag1.slice();
+    //multiple transformations!
+    for(var i=0; i<sinag2.length; i+=4)
+    {
+        //move to center
+        sinag2[i] += 0.6889;
+
+        //rotate x
+        sinag2[i] = sinag2[i]*Math.cos(Math.PI/8) - sinag2[i+1]*Math.sin(Math.PI/8);
+        //rotate y
+        sinag2[i+1] = sinag2[i]*Math.sin(Math.PI/8) + sinag2[i+1]*Math.cos(Math.PI/8);
+
+        //idk why 8 works here instead of 4.
+
+        //move back to left
+        sinag2[i] -= 0.6889;
+    }
+
+    var sinag2Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,sinag2Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(sinag2),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 5);
+    gl.drawArrays(gl.TRIANGLE_FAN, 9, 4);
+
+    var sinag3 = sinag1.slice();
+    //multiple transformations!
+    for(var i=0; i<sinag3.length; i+=4)
+    {
+        //move to center
+        sinag3[i] += 0.6889;
+
+        //rotate x
+        sinag3[i] = sinag3[i]*Math.cos(-Math.PI/8) - sinag3[i+1]*Math.sin(-Math.PI/8);
+        //rotate y
+        sinag3[i+1] = sinag3[i]*Math.sin(-Math.PI/8) + sinag3[i+1]*Math.cos(-Math.PI/8);
+        //move back to left
+        sinag3[i] -= 0.6889;
+    }
+
+    var sinag3Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,sinag3Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(sinag3),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader 252
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 5);
+    gl.drawArrays(gl.TRIANGLE_FAN, 9, 4);
+
+    //opposite of sinag1
+    var sinag4 = sinag1.slice();
+    for(var i=0;i<sinag4.length;i+=4)
+        sinag4[i+1] = -sinag4[i+1];
+
+    var sinag4Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,sinag4Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(sinag4),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader 252
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 5);
+    gl.drawArrays(gl.TRIANGLE_FAN, 9, 4);
+
+    //opposite of sinag2
+    sinag5 = sinag2.slice()
+    for(var i=0;i<sinag5.length;i+=4)
+        sinag5[i+1] = -sinag5[i+1];
+
+    var sinag5Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,sinag5Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(sinag5),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader 252
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 5);
+    gl.drawArrays(gl.TRIANGLE_FAN, 9, 4);
+
+    //reverse of sinag3
+    sinag6 = sinag3.slice()
+    for(var i=0;i<sinag6.length;i+=4)
+        sinag6[i+1] = -sinag6[i+1];
+
+    var sinag6Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,sinag6Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(sinag6),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader 252
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 5);
+    gl.drawArrays(gl.TRIANGLE_FAN, 9, 4);
+
+    //Right side. I'm just gonna plot this manually because screw it.
+    var sinag7 = [
+
+    -0.5933, -0.0356, 0.0, 1.0,
+    -0.5111, -0.0711, 0.0, 1.0,
+    -0.5000, -0.0444, 0.0, 1.0,
+    -0.5933, -0.0222, 0.0, 1.0,
+
+    -0.5933, -0.0133, 0.0, 1.0,
+    -0.4911, -0.0267, 0.0, 1.0,
+    -0.4778, -0.0000, 0.0, 1.0,
+    -0.4911, 0.0311, 0.0, 1.0,
+    -0.5933, 0.0178, 0.0, 1.0,
+
+    -0.5933, 0.0267, 0.0, 1.0,
+    -0.5000, 0.0489, 0.0, 1.0,
+    -0.5111, 0.0756, 0.0, 1.0,
+    -0.5933, 0.0444, 0.0, 1.0
+    ];
+
+    var sinag7Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,sinag7Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(sinag7),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 5);
+    gl.drawArrays(gl.TRIANGLE_FAN, 9, 4);
+
+    var sinag8 = sinag7.slice();
+    //reverse x
+    for(var i=0;i<sinag8.length;i+=4)
+    {
+        sinag8[i] += 0.6989;
+        sinag8[i] = -sinag8[i];
+        sinag8[i] -= 0.6889;
+    }
+
+    var sinag8Buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,sinag8Buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(sinag8),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,252/255.0,209/255.0,22/255.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 5);
+    gl.drawArrays(gl.TRIANGLE_FAN, 9, 4);
+
+    var vertices = [
+      -1.0, 1.0, 0.0, 1.0,
+      -1.0, 0.0, 0.0, 5.0,
+       1.0, 0.0, 0.0, 1.0,
+       1.0, 1.0, 0.0, 1.0,
+
+      -1.0, 0.0, 0.0, 5.0,
+      -1.0, -1.0, 0.0, 1.0,
+       1.0, -1.0, 0.0, 1.0,
+       1.0, 0.0, 0.0, 1.0,
+    ];
+
+    var topRightBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,topRightBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    
+    
+    //bughaw
+    gl.uniform4f(uFragColorPointer,0.0,56.0/255,168.0/255,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    //pula
+    gl.uniform4f(uFragColorPointer,206.0/255,17.0/255,38.0/255  ,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+
+    //points for araw
+    var araw = [];
+    for(var i=0; i<=360; i++)
+    {
+        //convert degree to radian
+        var j = i * Math.PI/180
+
+        //cos and sin only work with radian
+        var vert1 = [
+            //radius of sun is 50 pixels, 1/10 of xRes/2, 1/5 of yRes/2
+
+            //translate all x so it goes to left, in the middle of triangle
+            Math.cos(j)/10 - 0.692, //x
+            Math.sin(j)/5, //y
+            0.0,         //z
+            1.0          //w
+        ];
+        //yes including the center
+
+        //required center: 154x250
+        //subtract difference from origin (500x250), subtract xRes/2 (500), divide by xRes/2 (500) = -0.692
+        var vert2 = [-0.692,0.0,0.0,1.0]; //center
+
+        //plug in to original array
+        araw = araw.concat(vert1);
+        araw = araw.concat(vert2);
+    }
+    var n = araw.length / 4;
+
+    var arawBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,arawBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(araw),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.988,0.819,0.086,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+
+    /* Render lower left quadrant*/
+
+    gl.viewport(0, 0, canvas.width/2, canvas.height/2);
+    
+    /*Own code starts here*/
+    //points for green background
+    var green = [
+      -1.0, 1.0 , 0.0, 1.0,
+      -1.0, -1.0, 0.0, 1.0,  
+      1.0, -1.0, 0.0, 1.0,
+      1.0, 1.0, 0.0, 1.0
+    ];
+    //create buffer
+    var greenBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,greenBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(green),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.0,0.486,0.349,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    //points for yellow triangle behind black
+    var yellow = [
+      -1.0, -0.76, 0.0, 1.0,
+      -0.241, 0.0, 0.0, 1.0,  
+      -1.0, 0.76, 0.0, 1.0,
+    ];
+
+    //create buffer
+
+    var yellowBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,yellowBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(yellow),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.988,0.710,0.078,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    //points for main black triangle
+    var black = [
+    -1.0, -0.6, 0.0, 1.0,
+    -0.4, 0.0, 0.0, 1.0,  
+    -1.0, 0.6, 0.0, 1.0,
+    ];
+    var blackBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,blackBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(black),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    
+    //points for upper white trapezoid
+    var whiteUp = [
+    0.04, 0.2, 0.0, 1.0,
+    -0.76, 1.0, 0.0, 1.0,
+    1.0, 1.0, 0.0, 1.0,
+    1.0, 0.2, 0.0, 1.0
+    ];
+    //create buffer
+    var whiteUpBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,whiteUpBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(whiteUp),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,1.0,1.0,1.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    //points for lower white trapezoid are from upper white but with reversed Y coords
+    var whiteDown = [
+    0.04, -0.2, 0.0, 1.0,
+    -0.76, -1.0, 0.0, 1.0,
+    1.0, -1.0, 0.0, 1.0,
+    1.0, -0.2, 0.0, 1.0
+    ];
+    //create buffer
+    var whiteDownBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,whiteDownBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(whiteDown),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,1.0,1.0,1.0,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    //points for red trapezoid
+    var red = [
+    0.067, 0.333, 0.0, 1.0,
+    -0.6, 1.0, 0.0, 1.0,
+    1.0, 1.0, 0.0, 1.0,
+    1.0, 0.333, 0.0, 1.0
+    ];
+    var redBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,redBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(red),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.886,0.239,0.157,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    //points for blue trapezoid are same as red but with reversed Y coords
+    var blue = [
+    0.067, -0.333, 0.0, 1.0,
+    -0.6, -1.0, 0.0, 1.0,
+    1.0, -1.0, 0.0, 1.0,
+    1.0, -0.333, 0.0, 1.0
+    ];
+    var blueBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,blueBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(blue),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.047,0.110,0.550,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+
+
+    /*Render lower right quadrant*/
+    gl.viewport(canvas.width/2, 0, canvas.width/2, canvas.height/2);
+
+    /*Own code starts here*/
+
+    //points for blueMain
+    //just a circle nbd
+    var blueMain = [];
+    for(var i=0; i<=360; i++)
+    {
+        //convert degree to radian
+        var j = i * Math.PI/180
+
+        //cos and sin only work with radian
+        var vert1 = [
+            //diameter is 300, 600/300 is 2.
+            (Math.cos(j) * 0.666)/2, //x
+            (Math.sin(j)/2), //y
+            0.0,         //z
+            1.0          //w
+        ];
+        var vert2 = [0.0,0.0,0.0,1.0]; //center
+
+        //plug in to original array
+        blueMain = blueMain.concat(vert1);
+        blueMain = blueMain.concat(vert2);
+    }
+    var n = blueMain.length / 4;
+
+    var blueMainBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,blueMainBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(blueMain),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.0,71.0/255,160.0/255,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+
+    //points for redMain
+    //just a half-circle, tilted at -30 deg, figure out tilt using gimp but still nbd
+
+    var redMain = [];
+    for(var i=-30; i<=150; i++) //start at -30, end at 150 to rotate by -30 degrees without rotate transform because ¯\_(ツ)_/¯
+    {
+        //convert degree to radian
+        var j = i * Math.PI/180
+
+        //cos and sin only work with radian
+        var vert1 = [
+            //diameter is still 300, 600/300 = 2
+
+            //translate all x so it goes to left, in the middle of triangle
+            (Math.cos(j) * 0.666)/2, //x
+            (Math.sin(j)/2), //y
+            0.0,         //z
+            1.0          //w
+        ];
+        //yes including the center
+
+        //required center: 154x250
+        //subtract difference from origin (500x250), subtract xRes/2 (500), divide by xRes/2 (500) = -0.692
+        var vert2 = [0.0,0.0,0.0,1.0]; //center
+
+        //plug in to original array
+        redMain = redMain.concat(vert1);
+        redMain = redMain.concat(vert2);
+    }
+    var n = redMain.length / 4;
+
+    var redMainBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,redMainBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(redMain),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,205.0/255,46.0/255,58.0/255,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+
+    //points for redOverlap
+    //this thing... This I had to figure out with gimp where the overlap was. Then its diameter. But still a circle, I got this.
+    var redOverlap = [];
+    for(var i=0; i<=360; i++)
+    {
+        //convert degree to radian
+        var j = i * Math.PI/180
+
+        //cos and sin only work with radian
+        var vert1 = [
+            //diameter is 150, 600/150 = 4
+            //center is at (387,257), offset by approx (-0.14,0.14) (adjusted this a little bit)
+            (Math.cos(j) * 0.666)/4 - 0.138, //x
+            (Math.sin(j)/4) + 0.14, //y
+            0.0,         //z
+            1.0          //w
+        ];
+        //yes including the center
+        var vert2 = [-0.138,0.14,0.0,1.0]; //center
+
+        //plug in to original array
+        redOverlap = redOverlap.concat(vert1);
+        redOverlap = redOverlap.concat(vert2);
+    }
+    var n = redOverlap.length / 4;
+
+    var redOverlapBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,redOverlapBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(redOverlap),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,205.0/255,46.0/255,58.0/255,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+
+    //points for blue overlap
+
+    //tbh I just copied the code for the red overlap then flipped the x and y adjustments
+    var blueOverlap = [];
+    for(var i=0; i<=360; i++) //start at -30, end at 150 to rotate by -30 degrees without rotate transform because ¯\_(ツ)_/¯
+    {
+        //convert degree to radian
+        var j = i * Math.PI/180
+
+        //cos and sin only work with radian
+        var vert1 = [
+            //diameter is 150, 600/150 = 4
+            //center is at (387,257), offset by approx (-0.14,0.14) (adjusted this a little bit)
+            (Math.cos(j) * 0.666)/4 + 0.138, //x
+            (Math.sin(j)/4) - 0.14, //y
+            0.0,         //z
+            1.0          //w
+        ];
+        //yes including the center
+        var vert2 = [+0.138,-0.14,0.0,1.0]; //center
+
+        //plug in to original array
+        blueOverlap = blueOverlap.concat(vert1);
+        blueOverlap = blueOverlap.concat(vert2);
+    }
+    var n = blueOverlap.length / 4;
+
+    var blueOverlapBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,blueOverlapBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(blueOverlap),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+
+    //Set color in fragment shader
+    gl.uniform4f(uFragColorPointer,0.0,71.0/255,160.0/255,1.0);
+    //Execute vertex shader
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+
+    /*
+      Now this thing. This thing... Ngl this took me waaaaay longer than I wanted.
+      Had to plot ALL the rectangles one by one in gimp then note ALL their coordinates.
+      I didn't wanna have to manually compute ALL SEVENTY-TWO POINTS to convert them to WebGL's coordinate system though, so I did the only reasonable thing that a coder could do... code.
+      Made a tiny little C program based around that formula I've been using.
+      Why C? Idk really. I'm still a bit rusty on my JS (kahit web ang practicum ko asdfkmweori), not really comfortable with Perl or Python, R takes forever to install, idk why I didn't think of Java, gcc is built in with Linux... so C then.
+      THEN I realized that I haven't coded in C in forever. Had to fumble a bit with it and break a few good coding guidelines (I didn't bother with file i/o, I didn't use malloc!!!), but hey, it works. Hahahaha
+      It's here: https://github.com/jusrombawa/tinyutils it's coordconvert.c v1
+      I should really convert this to JS, would make things a loooot more easier, but anyway...
+      So I used the program to compute the points (manually again, because I was too tired/lazy not to use file i/o). And it worked...
+      ... kinda. More or less they're right, but some points are a *little* off. Maybe from the plotting or the rounding off. Probably the plotting.
+      Had to adjust all those wonky corners a bit. Okay, I tried, but they're definitely not perfect.
+      And violin! I present this completely inaccurate and inefficient part.
+
+      I really should've just used a couple bars then moved them around...
+
+      ... but whatever. It's done. I'm done. Ugh I need a beer.
+
+      I blame coffee for all this.
+    */
+
+    //points for geon, top left
+
+    var geon = [
+      -0.6956, 0.3933, 0.0, 1.0,
+      -0.6489, 0.3467, 0.0, 1.0,
+      -0.4622, 0.7633, 0.0, 1.0,
+      -0.5089, 0.8100, 0.0, 1.0,
+
+      -0.6267, 0.3267, 0.0, 1.0,
+      -0.5778, 0.2767, 0.0, 1.0,
+      -0.3933, 0.6933, 0.0, 1.0,
+      -0.4400, 0.7433, 0.0, 1.0,
+
+      -0.5556, 0.2533, 0.0, 1.0,
+      -0.5089, 0.2067, 0.0, 1.0,
+      -0.3244, 0.6267, 0.0, 1.0,
+      -0.3711, 0.6733, 0.0, 1.0
+    ];
+
+    var geonBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,geonBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(geon),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 8, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 12, 4);
+
+    //points for ri, bottom left
+
+    var ri = [
+      -0.6956, -0.3933, 0.0, 1.0,
+      -0.5089, -0.8100, 0.0, 1.0,
+      -0.4622, -0.7667, 0.0, 1.0,
+      -0.6489, -0.3433, 0.0, 1.0,
+
+      -0.6267, -0.3233, 0.0, 1.0,
+      -0.5400, -0.5133, 0.0, 1.0,
+      -0.4933, -0.4667, 0.0, 1.0,
+      -0.5778, -0.2733, 0.0, 1.0,
+
+      -0.5267, -0.5500, 0.0, 1.0,
+      -0.4400, -0.7400, 0.0, 1.0,
+      -0.3933, -0.6900, 0.0, 1.0,
+      -0.4800, -0.5000, 0.0, 1.0,
+
+      -0.5578, -0.2533, 0.0, 1.0,
+      -0.3711, -0.6700, 0.0, 1.0,
+      -0.3222, -0.6233, 0.0, 1.0,
+      -0.5067, -0.2033, 0.0, 1.0
+    ];
+
+    var riBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,riBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(ri),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 8, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 12, 4);
+
+    //points for gam, top right
+
+    var gam = [
+      0.3200, 0.6267, 0.0, 1.0,
+      0.4067, 0.4333, 0.0, 1.0,
+      0.4556, 0.4800, 0.0, 1.0,
+      0.3689, 0.6733, 0.0, 1.0,
+
+      0.4222, 0.4000, 0.0, 1.0,
+      0.5044, 0.2067, 0.0, 1.0,
+      0.5506, 0.2533, 0.0, 1.0,
+      0.4689, 0.4467, 0.0, 1.0,
+
+      0.3911, 0.6933, 0.0, 1.0,
+      0.4378, 0.7433, 0.0, 1.0,
+      0.6244, 0.3233, 0.0, 1.0,
+      0.5756, 0.2767, 0.0, 1.0,
+
+      0.4600, 0.7633, 0.0, 1.0,
+      0.5067, 0.8100, 0.0, 1.0,
+      0.5933, 0.6200, 0.0, 1.0,
+      0.5467, 0.5733, 0.0, 1.0,
+
+      0.5600, 0.5367, 0.0, 1.0,
+      0.6067, 0.5867, 0.0, 1.0,
+      0.6933, 0.3933, 0.0, 1.0,
+      0.6467, 0.3467, 0.0, 1.0
+    ];
+
+    var gamBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,gamBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(gam),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 8, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 12, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 16, 4);
+
+    //points for gon, bottom right
+
+    var gon = [
+      0.3250, -0.6233, 0.0, 1.0,
+      0.3689, -0.6692, 0.0, 1.0,
+      0.4556, -0.4800, 0.0, 1.0,
+      0.4133, -0.4267, 0.0, 1.0,
+
+      0.4222, -0.3967, 0.0, 1.0,
+      0.4689, -0.4433, 0.0, 1.0,
+      0.5533, -0.2533, 0.0, 1.0,
+      0.5067, -0.2033, 0.0, 1.0,
+
+      0.3978, -0.6900, 0.0, 1.0,
+      0.4378, -0.7400, 0.0, 1.0,
+      0.5244, -0.5467, 0.0, 1.0,
+      0.4778, -0.5000, 0.0, 1.0,
+
+      0.4911, -0.4667, 0.0, 1.0,
+      0.5378, -0.5133, 0.0, 1.0,
+      0.6244, -0.3200, 0.0, 1.0,
+      0.5778, -0.2733, 0.0, 1.0,
+
+      0.5600, -0.5367, 0.0, 1.0,
+      0.6067, -0.5833, 0.0, 1.0,
+      0.6933, -0.3900, 0.0, 1.0,
+      0.6467, -0.3433, 0.0, 1.0,
+
+      0.5467, -0.5700, 0.0, 1.0,
+      0.5933, -0.6167, 0.0, 1.0,
+      0.5067, -0.8100, 0.0, 1.0,
+      0.4600, -0.7600, 0.0, 1.0
+    ];
+
+    var gonBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,gonBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(gon),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(aPositionPointer,4,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(aPositionPointer);
+    
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 8, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 12, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 16, 4);
+
+    gl.uniform4f(uFragColorPointer,0.0,0.0,0.0,1.0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 20, 4);
+
+
+  }
+  </script>
+</head>
+
+<body onload="main()" style="text-align: center">
+	<canvas id="main_canvas" width="1000" height="666" style="border: 1px black solid">
+	</canvas>
+</body>
+</html>
